@@ -1,0 +1,69 @@
+mixin object(path, obj)
+  div.value.object
+    ul
+      each val, key in obj
+        li
+          - newPath = _.concat(path, [key])
+          .key(class=valType): span= key
+          +display(newPath, val)
+
+mixin array(path, arr)
+  div.value.array
+    ol
+      each val in arr
+        li
+          +display(path, val)
+
+mixin string(path, str)
+  - joinedPath = path.join('.')
+  if str && str.match(/^[a-f\d]{24}$/i) && _.has(dataPaths, joinedPath)
+    .value.string: span
+      a(href=dataPaths[joinedPath].replace('%%', str))= str
+  else if isUrl(str)
+    .value.string: span
+      a(target='_blank', href=str)= str
+  else
+    .value.string: span= str
+
+mixin number(path, num)
+  - joinedPath = path.join('.')
+  - paginationPaths = [ 'pagination.previous', 'pagination.next', 'pagination.last' ]
+  if paginationPaths.indexOf(joinedPath) >= 0
+    - uri = url.parse(req.originalUrl, true)
+    - _.set(uri, 'query.page', num)
+    - delete uri.search
+    - uri = uri.format()
+    .value.string: span
+      a(href=uri)= uri
+  else
+    .value.number: span= num
+
+mixin boolean(path, bool)
+  .value.boolean: span= bool.toString()
+
+mixin emptyObject(path, num)
+  .value.empty-object: span {}
+
+mixin null(path, num)
+  .value.null: span null
+
+mixin undefined(path, num)
+  .value.undefined: span undefined
+
+mixin display(path, val)
+  if _.isNull(val)
+    +null(path, val)
+  else if _.isUndefined(val)
+    +undefined(path, val)
+  else if _.isArray(val)
+    +array(path, val)
+  else if _.isBoolean(val)
+    +boolean(path, val)
+  else if _.isObject(val) && _.keys(val).length === 0
+    +emptyObject(path, val)
+  else if _.isObject(val)
+    +object(path, val)
+  else if _.isString(val)
+    +string(path, val)
+  else if _.isNumber(val)
+    +number(path, val)

@@ -1,0 +1,22 @@
+{
+  "name": "express-json-viewer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "pug": "2.0.0-beta11",
+    "lodash": "4.17.4",
+    "is-url": "1.2.2"
+  },
+  "devDependencies": {
+    "express": "4.15.2"
+  },
+  "scripts": {
+    "test": "node test"
+  }
+}
