@@ -21,14 +21,16 @@ var sanitize = function (data) {
   }))
 }
 
-var Viewer = function (req, res) {
+var Viewer = function (req, res, options) {
   this.req = req
   this.res = res
+  this.append = options.append || _.noop
 }
 
 Viewer.prototype.render = function (data) {
   data = data || {}
   data = sanitize(data)
+  this.append(data, this.req, this.res)
 
   var json = false
   var qJson = truthy.indexOf((_.get(this.req, 'query.json') || '').toLowerCase().trim()) !== -1
@@ -44,11 +46,13 @@ Viewer.prototype.render = function (data) {
   }))
 }
 
-module.exports = function (req, res, next) {
-  var jsonViewer = new Viewer(req, res)
-  res._json = res.json
-  res.json = function () {
-    jsonViewer.render.apply(jsonViewer, arguments)
+module.exports = function (options) {
+  return function (req, res, next) {
+    var jsonViewer = new Viewer(req, res, options || {})
+    res._json = res.json
+    res.json = function () {
+      jsonViewer.render.apply(jsonViewer, arguments)
+    }
+    next()
   }
-  next()
 }
