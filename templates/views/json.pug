@@ -35,7 +35,7 @@ html
       ol li:last-child:after {
         content: '';
       }
-      div.key.collapsable span:hover {
+      div.key.collapsable > span:hover {
         cursor: pointer;
         text-decoration: underline;
       }
@@ -76,8 +76,8 @@ html
         color: #1A01CC;
         font-weight: 700;
       }
-      div.value.object.empty ul,
-      div.value.array.empty ol {
+      div.value.object.empty > ul,
+      div.value.array.empty > ol {
         display: inline;
         padding-left: 0.5em;
         border-left: none;
@@ -89,6 +89,9 @@ html
       }
       div.value.object:before {
         content: '{';
+      }
+      div.value.array > ol > li > div.value.object:before {
+        margin-left: -0.25em;
       }
       div.value.object:after {
         content: '}';
