@@ -1,14 +1,24 @@
 mixin object(path, obj)
-  div.value.object
+  - objClass = undefined
+  if _.keys(obj).length === 0
+    - objClass = 'empty'
+  div.value.object(class=objClass)
     ul
-      each val, key in obj
+      each key in _.keys(obj)
+        - val = obj[key]
         li
           - newPath = _.concat(path, [key])
-          .key(class=valType): span= key
+          - valClass = undefined
+          if (_.isArray(val) && val.length) || (_.isObject(val) && _.keys(val).length)
+            - valClass = 'collapsable'
+          .key(class=valClass): span= key
           +display(newPath, val)
 
 mixin array(path, arr)
-  div.value.array
+  - arrClass = undefined
+  if arr.length === 0
+    - arrClass = 'empty'
+  div.value.array(class=arrClass)
     ol
       each val in arr
         li
@@ -41,9 +51,6 @@ mixin number(path, num)
 mixin boolean(path, bool)
   .value.boolean: span= bool.toString()
 
-mixin emptyObject(path, num)
-  .value.empty-object: span {}
-
 mixin null(path, num)
   .value.null: span null
 
@@ -59,8 +66,6 @@ mixin display(path, val)
     +array(path, val)
   else if _.isBoolean(val)
     +boolean(path, val)
-  else if _.isObject(val) && _.keys(val).length === 0
-    +emptyObject(path, val)
   else if _.isObject(val)
     +object(path, val)
   else if _.isString(val)
