@@ -16,6 +16,8 @@ mixin object(path, obj)
 
 mixin array(path, arr)
   - arrClass = undefined
+  if path.length > 0
+    - path[path.length - 1] += '[]'
   if arr.length === 0
     - arrClass = 'empty'
   div.value.array(class=arrClass)
@@ -24,16 +26,23 @@ mixin array(path, arr)
         li
           +display(path, val)
 
+
+mixin val(path, val)
+  - p = path.join('.')
+  - val = val.toString()
+  if _.has(paths, p)
+    a(href=util.format(paths[p], val))= val
+  else
+    | #{val}
+
 mixin string(path, str)
   - joinedPath = path.join('.')
-  if str && str.match(/^[a-f\d]{24}$/i) && _.has(dataPaths, joinedPath)
-    .value.string: span
-      a(href=dataPaths[joinedPath].replace('%%', str))= str
-  else if isUrl(str)
+  if isUrl(str)
     .value.string: span
       a(target='_blank', href=str)= str
   else
-    .value.string: span= str
+    .value.string: span
+      +val(path, str)
 
 mixin number(path, num)
   - joinedPath = path.join('.')
@@ -46,16 +55,20 @@ mixin number(path, num)
     .value.string: span
       a(href=uri)= uri
   else
-    .value.number: span= num
+    .value.number: span
+      +val(path, num)
 
 mixin boolean(path, bool)
-  .value.boolean: span= bool.toString()
+  .value.boolean: span
+    +val(path, bool.toString())
 
 mixin null(path, num)
-  .value.null: span null
+  .value.null: span
+    +val(path, 'null')
 
 mixin undefined(path, num)
-  .value.undefined: span undefined
+  .value.undefined: span
+    +val(path, 'undefined')
 
 mixin display(path, val)
   if _.isNull(val)

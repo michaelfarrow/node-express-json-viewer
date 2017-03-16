@@ -1,4 +1,5 @@
 var pug = require('pug')
+var util = require('util')
 var path = require('path')
 var _ = require('lodash')
 var isUrl = require('is-url')
@@ -27,8 +28,10 @@ var Viewer = function (req, res, options) {
   this.append = options.append || _.noop
 }
 
-Viewer.prototype.render = function (data) {
+Viewer.prototype.render = function (data, paths) {
   data = data || {}
+  paths = paths || {}
+
   data = sanitize(data)
   this.append(data, this.req, this.res)
 
@@ -40,6 +43,8 @@ Viewer.prototype.render = function (data) {
   if (json) return this.res._json(data)
 
   this.res.send(template({
+    paths: paths,
+    util: util,
     _: _,
     isUrl: isUrl,
     data: data
