@@ -45,18 +45,18 @@ mixin string(path, str)
       +val(path, str)
 
 mixin number(path, num)
-  - joinedPath = path.join('.')
-  - paginationPaths = [ 'pagination.previous', 'pagination.next', 'pagination.last' ]
-  if paginationPaths.indexOf(joinedPath) >= 0
-    - uri = url.parse(req.originalUrl, true)
-    - _.set(uri, 'query.page', num)
-    - delete uri.search
-    - uri = uri.format()
-    .value.string: span
-      a(href=uri)= uri
-  else
-    .value.number: span
-      +val(path, num)
+  .value.number: span
+    +val(path, num)
+  //- - joinedPath = path.join('.')
+  //- - paginationPaths = [ 'pagination.previous', 'pagination.next', 'pagination.last' ]
+  //- if paginationPaths.indexOf(joinedPath) >= 0
+  //-   - uri = url.parse(req.originalUrl, true)
+  //-   - _.set(uri, 'query.page', num)
+  //-   - delete uri.search
+  //-   - uri = uri.format()
+  //-   .value.string: span
+  //-     a(href=uri)= uri
+  //- else
 
 mixin boolean(path, bool)
   .value.boolean: span
